@@ -1,3 +1,16 @@
+// URLクエリパラメータからユーザデータを取得
+// TODO 例外処理を書く
+var userData;
+if (location.search) {
+  var urlSearchParam = location.search;
+  var UserDataParam = urlSearchParam.replace('?user=', '');
+  var UserDataParamDecoded = decodeURIComponent(UserDataParam);
+  userData = JSON.parse(UserDataParamDecoded);
+}
+// 全部空でデータ投入
+// if (!userData) userData = {"name":"waiwai","visited":[],"passed":[],"unreached":[]};
+
+
 var map = L.map('map');
 var visitedColor = "#FF0000";
 var passedColor = "#0000FF";
@@ -53,6 +66,11 @@ const legend = L.control({position: 'bottomright'});
 legend.onAdd = function (map) {
   const div = L.DomUtil.create('div', 'info legend');
   const labels = [];
+  
+  // ユーザーデータが読み込めていた場合、名前を表示する
+  if (userData && userData.name) {
+    labels.push(`<i style="background:` + '#FFFFFF'   + `"></i> ` + userData.name );
+  }
 
   labels.push(`<i style="background:` + visitedColor   + `"></i> 上陸済み`);
   labels.push(`<i style="background:` + passedColor    + `"></i> 寄港・通過済み`);
@@ -65,6 +83,9 @@ legend.addTo(map);
 
 // カラー選択
 function getColor(id) {
+  // userDataの指定がない場合は全部未到達で返す
+  if (!userData) return unreachedColor;
+
   return userData.visited.includes(id)   ? visitedColor : // 上陸済み
           userData.passed.includes(id)    ? passedColor : // 寄港済み
           userData.unreached.includes(id) ? unreachedColor : // 未到達
