@@ -1,14 +1,37 @@
+let userData = {};
+
 // URLクエリパラメータからユーザデータを取得
 // TODO 例外処理を書く
-var userData;
-if (location.search) {
-  var urlSearchParam = location.search;
-  var UserDataParam = urlSearchParam.replace('?user=', '');
-  var UserDataParamDecoded = decodeURIComponent(UserDataParam);
-  userData = JSON.parse(UserDataParamDecoded);
+if (window.location.search) {
+  const url = new URL(window.location.href);
+  const userParam = url.searchParams.get('user');
+  const obj = decodeURIComponent(userParam);
+  const loadUserData = JSON.parse(obj);
+
+  // localStorageにデータが有る場合は、上書きするか確認する。
+  let s = JSON.parse(window.localStorage.getItem('userData'));
+  if (s){
+    let checkUpdate = window.confirm("すでにユーザデータがあります。上書きしますか？");
+    if (checkUpdate) {
+      window.localStorage.setItem('userData', JSON.stringify(loadUserData));
+      window.alert("データの読み込みが完了しました。");
+      url.searchParams.delete('user');
+      console.log(url.search);
+      history.replaceState('', '', url.pathname);
+    } else {
+      window.alert("データの読み込みをキャンセルしました。");
+    }
+  } else {
+    window.localStorage.setItem('userData', JSON.stringify(loadUserData));
+    window.alert("データの読み込みが完了しました。");
+    url.searchParams.delete('user');
+    console.log(url.search);
+    history.replaceState('', '', url.pathname);
+  }
 }
-// 全部空でデータ投入
-// if (!userData) userData = {"name":"waiwai","visited":[],"passed":[],"unreached":[]};
+// localStorageからデータを取得
+// TODO 例外処理を書く
+userData = JSON.parse(window.localStorage.getItem('userData'));
 
 
 var map = L.map('map');
