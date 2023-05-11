@@ -16,7 +16,6 @@ if (window.location.search) {
       window.localStorage.setItem('userData', JSON.stringify(loadUserData));
       window.alert("データの読み込みが完了しました。");
       url.searchParams.delete('user');
-      console.log(url.search);
       history.replaceState('', '', url.pathname);
     } else {
       window.alert("データの読み込みをキャンセルしました。");
@@ -25,7 +24,6 @@ if (window.location.search) {
     window.localStorage.setItem('userData', JSON.stringify(loadUserData));
     window.alert("データの読み込みが完了しました。");
     url.searchParams.delete('user');
-    console.log(url.search);
     history.replaceState('', '', url.pathname);
   }
 }
@@ -33,6 +31,11 @@ if (window.location.search) {
 // TODO 例外処理を書く
 userData = JSON.parse(window.localStorage.getItem('userData'));
 
+// localstorageにデータがない場合、初期化
+if(!userData) {
+  userData = {"name":"","visited":[],"passed":[],"unreached":[]};
+  window.localStorage.setItem('userData', JSON.stringify(userData));
+}
 
 var map = L.map('map');
 var visitedColor = "#FF0000";
@@ -111,8 +114,9 @@ function getColor(id) {
 
   return userData.visited.includes(id)   ? visitedColor : // 上陸済み
           userData.passed.includes(id)    ? passedColor : // 寄港済み
-          userData.unreached.includes(id) ? unreachedColor : // 未到達
-                                            notFoundColor ; // 情報なし
+                                            unreachedColor // 未到達
+        //   userData.unreached.includes(id) ? unreachedColor : // 未到達
+        //                                     notFoundColor ; // 情報なし
 }
 
 
@@ -131,13 +135,17 @@ var islandMap = L.geoJson(islandData, {
   // ポップアップ
   onEachFeature: function (feature, layer) {
     if(feature.properties && feature.properties.islandName){
-      var popupText = "<p>" + feature.properties.islandName + "</p>"
-      var popupText2= "<table>"
+      var popupText= "<table>"
               + "<tr><td>ＩＤ：</td><td>" + feature.properties.id + "</td></tr>"
               + "<tr><td>島名：</td><td>" + feature.properties.islandName + "</td></tr>"
               + "<tr><td>所属：</td><td>" + feature.properties.prefectures + " " + feature.properties.cities + "</td></tr>"
-              + "</table>"
-      layer.bindPopup(popupText2);
+              + "</table>";
+      popupText += "<form name=\"status\">"
+              + "<label><input type=\"radio\" name=\"legend\" value=\"visited\" onchange=\"changeStatusByPopup(" + feature.properties.id + ",'visited');\">上陸済み</label><br>"
+              + "<label><input type=\"radio\" name=\"legend\" value=\"passed\" onchange=\"changeStatusByPopup(" + feature.properties.id + ",'passed');\">寄港・通過済み</label><br>"
+              + "<label><input type=\"radio\" name=\"legend\" value=\"unreached\" onchange=\"changeStatusByPopup(" + feature.properties.id + ",'unreached');\">未到達</label>"
+              + "</form>";
+      layer.bindPopup(popupText);
     }
   },
   // 引用情報
