@@ -38,14 +38,14 @@
 	}
 
 	// マップデータの作成
-	const islandData01 = await (await fetch("../data/islands/islandData01Hokkaido.json")).json();
-	const islandData02 = await (await fetch("../data/islands/islandData02Tohoku.json")).json();
-	const islandData03 = await (await fetch("../data/islands/islandData03Kanto.json")).json();
-	const islandData04 = await (await fetch("../data/islands/islandData04Chubu.json")).json();
-	const islandData05 = await (await fetch("../data/islands/islandData05Kinki.json")).json();
-	const islandData06 = await (await fetch("../data/islands/islandData06Chugoku.json")).json();
-	const islandData07 = await (await fetch("../data/islands/islandData07Shikoku.json")).json();
-	const islandData08 = await (await fetch("../data/islands/islandData08Kyushu.json")).json();
+	const islandData01 = await (await fetch("./data/islands/islandData01Hokkaido.json")).json();
+	const islandData02 = await (await fetch("./data/islands/islandData02Tohoku.json")).json();
+	const islandData03 = await (await fetch("./data/islands/islandData03Kanto.json")).json();
+	const islandData04 = await (await fetch("./data/islands/islandData04Chubu.json")).json();
+	const islandData05 = await (await fetch("./data/islands/islandData05Kinki.json")).json();
+	const islandData06 = await (await fetch("./data/islands/islandData06Chugoku.json")).json();
+	const islandData07 = await (await fetch("./data/islands/islandData07Shikoku.json")).json();
+	const islandData08 = await (await fetch("./data/islands/islandData08Kyushu.json")).json();
 	var islandData = {
 		"type": "FeatureCollection",
 		features: islandData01.features.concat(
