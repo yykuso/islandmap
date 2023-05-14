@@ -60,7 +60,14 @@
 		)
 	}
 
-	var map = L.map('map');
+	// マップの表示
+	var map = L.map('map',{
+		center: [35.3622222, 138.7313889],
+		zoom: 5
+	});
+	// マップにハッシュを追加
+    L.hash(map);
+
 	var visitedColor = "#FF0000";
 	var passedColor = "#0000FF";
 	var unreachedColor = "#000000";
@@ -106,9 +113,6 @@
 		"地理院 白地図": gsiBlankLayer,
 		"地理院 オルソ": gsiOrtLayer,
 	};
-
-	// デフォルトのマップ表示
-	map.setView([35.3622222, 138.7313889], 5);
 
 	// 凡例の表示
 	const legend = L.control({position: 'bottomright'});
