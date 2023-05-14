@@ -37,6 +37,29 @@
 	window.localStorage.setItem('userData', JSON.stringify(userData));
 	}
 
+	// マップデータの作成
+	// TODO importとかは整理する
+	import islandData01 from "../data/islands/islandData01Hokkaido.json" assert { type: "json" }
+	import islandData02 from "../data/islands/islandData02Tohoku.json" assert { type: "json" }
+	import islandData03 from "../data/islands/islandData03Kanto.json" assert { type: "json" }
+	import islandData04 from "../data/islands/islandData04Chubu.json" assert { type: "json" }
+	import islandData05 from "../data/islands/islandData05Kinki.json" assert { type: "json" }
+	import islandData06 from "../data/islands/islandData06Chugoku.json" assert { type: "json" }
+	import islandData07 from "../data/islands/islandData07Shikoku.json" assert { type: "json" }
+	import islandData08 from "../data/islands/islandData08Kyushu.json" assert { type: "json" }
+	var islandData = {
+		"type": "FeatureCollection",
+		features: islandData01.features.concat(
+			islandData02.features,
+			islandData03.features,
+			islandData04.features,
+			islandData05.features,
+			islandData06.features,
+			islandData07.features,
+			islandData08.features
+		)
+	}
+
 	var map = L.map('map');
 	var visitedColor = "#FF0000";
 	var passedColor = "#0000FF";
