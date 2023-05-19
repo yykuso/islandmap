@@ -5,32 +5,36 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>島マップ</title>
 	<link rel="icon" href="./favicon.ico">
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin="" />
   <link href="./css/style.css" rel="stylesheet" />
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.2/dist/leaflet.css"
-    integrity="sha256-sA+zWATbFveLLNqWO2gtiw3HL/lh1giY/Inf1BJ0z14="
-    crossorigin=""/>
+
   <link rel="stylesheet" href="https://www.unpkg.com/leaflet-sidebar-v2@3.2.3/css/leaflet-sidebar.css"
     integrity="sha256-roHkkDjezddQLHoNNvsWCVfLgLLIOHPjGoxx04EbJ9Q="
     crossorigin=""/>
-  <script src="https://unpkg.com/leaflet@1.9.2/dist/leaflet.js"
-    integrity="sha256-o9N1jGDZrf5tS+Ft4gbIK7mYMipq9lqpVJ91xHSyKhg="
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
     crossorigin=""></script>
   <script src="https://unpkg.com/leaflet-hash@0.2.1/leaflet-hash.js"
     integrity="sha256-0gxt71nsjV0toCvIrBkXr1M5IecQXS39rv9In81hLpE="
     crossorigin=""></script>
   <script src="https://unpkg.com/leaflet-sidebar-v2@3.2.3/js/leaflet-sidebar.js"
     integrity="sha256-J0ucfI0CtX3DzlAwSoGiL+vsEHiHT9fgW5oBt3aadRM="
-      crossorigin=""></script>
-  <script src="https://code.jquery.com/jquery-3.6.4.min.js"
-    integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8="
-    crossorigin="anonymous"></script>
-  <script src="https://kit.fontawesome.com/1c3ba0cb0d.js"
-    crossorigin="anonymous"></script>
+    crossorigin=""></script>
+  <script src="https://unpkg.com/jquery@3.7.0/dist/jquery.min.js"
+    integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin=""></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"
+    integrity="sha512-fD9DI5bZwQxOi7MhYWnnNPlvXdp/2Pj3XSTRrFs5FQa4mizyGLnJcN6tuvUS6LbmgN1ut+XGSABKvjN0H6Aoow=="
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer"></script>
   <script src="./js/common.js"></script>
-  <!-- <script src="./data/portData.js"></script> -->
-  <!-- <script src="./data/seaRouteData.js"></script> -->
   <script type="module" src="./js/map.js"></script>
-  <!-- <script type="module">import * as module from "./js/map.js";console.log(module.islandData)</script> -->
 </head>
 
 <body>
@@ -44,7 +48,7 @@
       </ul>
       <ul role="tablist">
         <li><a href="#info" role="tab"><i class="fa fa-circle-info"></i></a></li>
-        <li><a href="https://github.com/yykuso/islandmap"><i class="fa fa-github"></i></a></li>
+        <li><a href='https://github.com/yykuso/islandmap' target='_blank'><i class="fa-brands fa-github"></i></a></li>
       </ul>
     </div>
 
