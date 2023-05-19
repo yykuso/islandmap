@@ -306,10 +306,12 @@ sidebar.on('content', function(ev) {
 		document.getElementById('msg-export-user-url').innerText = '';
 		const exportUrl = new URL(window.location.href);
 		exportUrl.hash = '';
-		exportUrl.searchParams.delete('user');
+		exportUrl.searchParams.set('user', JSON.stringify(userData));
 		let userUrlForm = document.getElementById('export-user-url');
-		userUrlForm.value = exportUrl.href + '?user=' + JSON.stringify(userData);
+		userUrlForm.value = exportUrl.href;
 		let checkCopyUserUrlButton = document.getElementById('checkCopyUserUrlButton');
 		checkCopyUserUrlButton.addEventListener('click', copyUserUrlButtonClick);
 	}
 });
+
+export {islandData}
