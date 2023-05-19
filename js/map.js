@@ -39,36 +39,7 @@ window.localStorage.setItem('userData', JSON.stringify(userData));
 
 dispLoading();
 // マップデータの作成
-var islandData = {};
-$.when(
-	$.getJSON("./data/islands/islandData01Hokkaido.json"),
-	$.getJSON("./data/islands/islandData02Tohoku.json"),
-	$.getJSON("./data/islands/islandData03Kanto.json"),
-	$.getJSON("./data/islands/islandData04Chubu.json"),
-	$.getJSON("./data/islands/islandData05Kinki.json"),
-	$.getJSON("./data/islands/islandData06Chugoku.json"),
-	$.getJSON("./data/islands/islandData07Shikoku.json"),
-	$.getJSON("./data/islands/islandData08Kyushu.json")
-)
-.done(function(islandData01, islandData02, islandData03, islandData04, islandData05, islandData06, islandData07, islandData08) {
-	// すべての読み込みが成功した時の処理
-	islandData = {
-		"type": "FeatureCollection",
-		features: islandData01[0].features.concat(
-			islandData02[0].features,
-			islandData03[0].features,
-			islandData04[0].features,
-			islandData05[0].features,
-			islandData06[0].features,
-			islandData07[0].features,
-			islandData08[0].features
-		)
-	};
-})
-.fail(function() {
-	// 失敗したときの処理
-	// TODO
-});
+const islandData = await loadIslandData();
 removeLoading();
 
 
