@@ -55,3 +55,19 @@ function changeUserName(name){
 	// localStorageに保存しておく
 	window.localStorage.setItem('userData', JSON.stringify(userData));
 }
+
+/**
+ * インジゲータの表示
+ */
+function dispLoading(){
+	if($("#loader").length == 0){
+		$("body").append("<div class='loader-wrap'><div class='loader'>Loading...</div></div>");
+	}
+}
+
+/**
+ * インジゲータの削除
+ */
+function removeLoading(){
+	$("#loader").remove();
+}  

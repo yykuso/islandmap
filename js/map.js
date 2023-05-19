@@ -37,7 +37,7 @@ userData = {"name":"","visited":[],"passed":[],"unreached":[]};
 window.localStorage.setItem('userData', JSON.stringify(userData));
 }
 
-
+dispLoading();
 // マップデータの作成
 // import {islandData} from "./data.js"
 // import islandData01 from "../data/islands/islandData02Tohoku.json" assert { type:"json"};
@@ -61,6 +61,8 @@ var islandData = {
 		islandData08.features
 	)
 };
+removeLoading();
+
 
 // 港湾データの読み込み
 const portData = await (await fetch("./data/portData.json")).json();
