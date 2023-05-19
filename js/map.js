@@ -39,28 +39,36 @@ window.localStorage.setItem('userData', JSON.stringify(userData));
 
 dispLoading();
 // マップデータの作成
-// import {islandData} from "./data.js"
-// import islandData01 from "../data/islands/islandData02Tohoku.json" assert { type:"json"};
-const islandData01 = await (await fetch("./data/islands/islandData01Hokkaido.json")).json();
-const islandData02 = await (await fetch("./data/islands/islandData02Tohoku.json")).json();
-const islandData03 = await (await fetch("./data/islands/islandData03Kanto.json")).json();
-const islandData04 = await (await fetch("./data/islands/islandData04Chubu.json")).json();
-const islandData05 = await (await fetch("./data/islands/islandData05Kinki.json")).json();
-const islandData06 = await (await fetch("./data/islands/islandData06Chugoku.json")).json();
-const islandData07 = await (await fetch("./data/islands/islandData07Shikoku.json")).json();
-const islandData08 = await (await fetch("./data/islands/islandData08Kyushu.json")).json();
-var islandData = {
-	"type": "FeatureCollection",
-	features: islandData01.features.concat(
-		islandData02.features,
-		islandData03.features,
-		islandData04.features,
-		islandData05.features,
-		islandData06.features,
-		islandData07.features,
-		islandData08.features
-	)
-};
+var islandData = {};
+$.when(
+	$.getJSON("./data/islands/islandData01Hokkaido.json"),
+	$.getJSON("./data/islands/islandData02Tohoku.json"),
+	$.getJSON("./data/islands/islandData03Kanto.json"),
+	$.getJSON("./data/islands/islandData04Chubu.json"),
+	$.getJSON("./data/islands/islandData05Kinki.json"),
+	$.getJSON("./data/islands/islandData06Chugoku.json"),
+	$.getJSON("./data/islands/islandData07Shikoku.json"),
+	$.getJSON("./data/islands/islandData08Kyushu.json")
+)
+.done(function(islandData01, islandData02, islandData03, islandData04, islandData05, islandData06, islandData07, islandData08) {
+	// すべての読み込みが成功した時の処理
+	islandData = {
+		"type": "FeatureCollection",
+		features: islandData01[0].features.concat(
+			islandData02[0].features,
+			islandData03[0].features,
+			islandData04[0].features,
+			islandData05[0].features,
+			islandData06[0].features,
+			islandData07[0].features,
+			islandData08[0].features
+		)
+	};
+})
+.fail(function() {
+	// 失敗したときの処理
+	// TODO
+});
 removeLoading();
 
 

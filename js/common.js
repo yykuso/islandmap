@@ -60,7 +60,7 @@ function changeUserName(name){
  * インジゲータの表示
  */
 function dispLoading(){
-	if($("#loader").length == 0){
+	if($(".loader-wrap").length == 0){
 		$("body").append("<div class='loader-wrap'><div class='loader'>Loading...</div></div>");
 	}
 }
@@ -69,5 +69,5 @@ function dispLoading(){
  * インジゲータの削除
  */
 function removeLoading(){
-	$("#loader").remove();
+	$(".loader-wrap").remove();
 }  
