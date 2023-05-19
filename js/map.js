@@ -289,7 +289,7 @@ sidebar.on('content', function(ev) {
 		exportUrl.hash = '';
 		exportUrl.searchParams.set('user', JSON.stringify(userData));
 		let userUrlForm = document.getElementById('export-user-url');
-		userUrlForm.value = exportUrl.href;
+		userUrlForm.value = exportUrl.href.replace(/%2C/g, ',');
 		let checkCopyUserUrlButton = document.getElementById('checkCopyUserUrlButton');
 		checkCopyUserUrlButton.addEventListener('click', copyUserUrlButtonClick);
 	}
