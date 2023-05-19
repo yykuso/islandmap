@@ -33,7 +33,7 @@ userData = JSON.parse(window.localStorage.getItem('userData'));
 
 // localstorageにデータがない場合、初期化
 if(!userData) {
-userData = {"name":"","visited":[],"passed":[],"unreached":[]};
+userData = {"version":1,"name":"","visited":[],"passed":[],"unreached":[]};
 window.localStorage.setItem('userData', JSON.stringify(userData));
 }
 
