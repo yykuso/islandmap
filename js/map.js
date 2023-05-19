@@ -37,7 +37,10 @@
 	window.localStorage.setItem('userData', JSON.stringify(userData));
 	}
 
+
 	// マップデータの作成
+	// import {islandData} from "./data.js"
+	// import islandData01 from "../data/islands/islandData02Tohoku.json" assert { type:"json"};
 	const islandData01 = await (await fetch("./data/islands/islandData01Hokkaido.json")).json();
 	const islandData02 = await (await fetch("./data/islands/islandData02Tohoku.json")).json();
 	const islandData03 = await (await fetch("./data/islands/islandData03Kanto.json")).json();
@@ -59,6 +62,11 @@
 		)
 	};
 
+	// 港湾データの読み込み
+	const portData = await (await fetch("./data/portData.json")).json();
+	const seaRouteData = await (await fetch("./data/seaRouteData.json")).json();
+
+
 	// マップの表示
 	var map = L.map('map',{
 		center: [35.3622222, 138.7313889],
@@ -74,14 +82,16 @@
 
 	// タイル選択
 	var gsiAttribution = [
-	"© <a href='https://maps.gsi.go.jp/development/ichiran.html'>国土地理院</a>"
+	"<a href='https://maps.gsi.go.jp/development/ichiran.html'>国土地理院</a>"
 	]
-	var nlftpIslandAttribution = [
-	"<a href='https://nlftp.mlit.go.jp/ksj/gml/datalist/KsjTmplt-C23.html' target='_blank'>「国土数値情報（海岸線データ）」</a>、<a href='https://nlftp.mlit.go.jp/ksj/gml/datalist/KsjTmplt-W09-v2_2.html' target='_blank'>「国土数値情報（湖沼データ）」</a>を加工して作成"
-	]
-	var nlftpPortAttribution = [
-	"<a href='https://nlftp.mlit.go.jp/ksj/gml/datalist/KsjTmplt-C02-v3_2.html' target='_blank'>「国土数値情報（港湾データ）」</a>を加工して作成"
-	]
+	var nlftpIslandAttribution = [];
+	// [
+	// 	"<a href='https://nlftp.mlit.go.jp/ksj/gml/datalist/KsjTmplt-C23.html' target='_blank'>「国土数値情報（海岸線データ）」</a>、<a href='https://nlftp.mlit.go.jp/ksj/gml/datalist/KsjTmplt-W09-v2_2.html' target='_blank'>「国土数値情報（湖沼データ）」</a>を加工して作成"
+	// ]
+	var nlftpPortAttribution = [];
+	// [
+	// 	"<a href='https://nlftp.mlit.go.jp/ksj/gml/datalist/KsjTmplt-C02-v3_2.html' target='_blank'>「国土数値情報（港湾データ）」</a>を加工して作成"
+	// ]
 
 	var gsiPaleLayer = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png',{
 		minZoom: 2,
@@ -103,8 +113,8 @@
 		maxZoom: 18,
 		opacity: 0.7,
 		attribution: gsiAttribution
-							+ ",「データソース：Landsat8画像（GSI,TSIC,GEO Grid/AIST）, Landsat8画像（courtesy of the U.S. Geological Survey）, 海底地形（GEBCO）」"
-							+ ",「Images on 世界衛星モザイク画像 obtained from site https://lpdaac.usgs.gov/data_access maintained by the NASA Land Processes Distributed Active Archive Center (LP DAAC), USGS/Earth Resources Observation and Science (EROS) Center, Sioux Falls, South Dakota, (Year). Source of image data product.」",
+							// + ",「データソース：Landsat8画像（GSI,TSIC,GEO Grid/AIST）, Landsat8画像（courtesy of the U.S. Geological Survey）, 海底地形（GEBCO）」"
+							// + ",「Images on 世界衛星モザイク画像 obtained from site https://lpdaac.usgs.gov/data_access maintained by the NASA Land Processes Distributed Active Archive Center (LP DAAC), USGS/Earth Resources Observation and Science (EROS) Center, Sioux Falls, South Dakota, (Year). Source of image data product.」",
 	});
 	var baseMap = {
 		"地理院 淡色地図": gsiPaleLayer.addTo(map),
@@ -222,6 +232,13 @@
 	attribution: nlftpPortAttribution
 	})
 
+	// サイドバー
+	var sidebar = L.control.sidebar({
+		autopan: false,
+		closeButton: true,
+		container: 'sidebar',
+		position: 'left',
+	}).addTo(map)
 
 	var geojsonLayer = {
 	"島到達情報": islandMap,
@@ -244,3 +261,57 @@
 		{ collapsed: false }
 	).addTo(map);
 	}
+
+	sidebar.on('content', function(ev) {
+
+		if (ev.id = 'user'){
+			
+			const userData = JSON.parse(window.localStorage.getItem('userData'));
+			
+			function userNameButtonClick(){
+				let text = userNameTextForm.value;
+				changeUserName(text);
+
+				let msg = document.getElementById('msg-user-name');
+				msg.innerText = 'ユーザ名「' + text + '」で更新しました。';
+			}
+			
+			document.getElementById('msg-user-name').innerText = '';
+			let userNameTextForm = document.getElementById('user-name');
+			userNameTextForm.value = userData.name;
+			let checkUserNameButton = document.getElementById('checkUserNameButton');
+			checkUserNameButton.addEventListener('click', userNameButtonClick);
+
+
+			function importUserJsonButtonClick(){
+				let msg = document.getElementById('msg-input-user-name');
+				msg.innerText = '実装前です。';
+			}
+
+			document.getElementById('msg-input-user-name').innerText = '';
+			let userJsonForm = document.getElementById('export-user-json');
+			userJsonForm.value = JSON.stringify(userData);
+			let checkImportUserJsonButton = document.getElementById('checkImportUserJsonButton');
+			checkImportUserJsonButton.addEventListener('click', importUserJsonButtonClick);
+
+
+			function copyUserUrlButtonClick(){
+				let text = userUrlForm.value;
+				navigator.clipboard.writeText(text);
+
+				let msg = document.getElementById('msg-export-user-url');
+				msg.innerText = 'コピーしました。';
+			}
+
+			document.getElementById('msg-export-user-url').innerText = '';
+			const exportUrl = new URL(window.location.href);
+			exportUrl.hash = '';
+			exportUrl.searchParams.set('user', JSON.stringify(userData));
+			let userUrlForm = document.getElementById('export-user-url');
+			userUrlForm.value = exportUrl.href;
+			let checkCopyUserUrlButton = document.getElementById('checkCopyUserUrlButton');
+			checkCopyUserUrlButton.addEventListener('click', copyUserUrlButtonClick);
+		}
+	});
+
+	export {islandData}

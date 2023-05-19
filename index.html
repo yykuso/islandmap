@@ -2,11 +2,14 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>島マップ</title>
   <link href="./css/style.css" rel="stylesheet" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.2/dist/leaflet.css"
     integrity="sha256-sA+zWATbFveLLNqWO2gtiw3HL/lh1giY/Inf1BJ0z14="
+    crossorigin=""/>
+  <link rel="stylesheet" href="https://www.unpkg.com/leaflet-sidebar-v2@3.2.3/css/leaflet-sidebar.css"
+    integrity="sha256-roHkkDjezddQLHoNNvsWCVfLgLLIOHPjGoxx04EbJ9Q="
     crossorigin=""/>
   <script src="https://unpkg.com/leaflet@1.9.2/dist/leaflet.js"
     integrity="sha256-o9N1jGDZrf5tS+Ft4gbIK7mYMipq9lqpVJ91xHSyKhg="
@@ -14,18 +17,107 @@
   <script src="https://unpkg.com/leaflet-hash@0.2.1/leaflet-hash.js"
     integrity="sha256-0gxt71nsjV0toCvIrBkXr1M5IecQXS39rv9In81hLpE="
     crossorigin=""></script>
+  <script src="https://unpkg.com/leaflet-sidebar-v2@3.2.3/js/leaflet-sidebar.js"
+    integrity="sha256-J0ucfI0CtX3DzlAwSoGiL+vsEHiHT9fgW5oBt3aadRM="
+      crossorigin=""></script>
   <script src="https://code.jquery.com/jquery-3.6.4.min.js"
     integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8="
     crossorigin="anonymous"></script>
   <script src="https://kit.fontawesome.com/1c3ba0cb0d.js"
     crossorigin="anonymous"></script>
   <script src="./js/common.js"></script>
+  <!-- <script src="./data/portData.js"></script> -->
+  <!-- <script src="./data/seaRouteData.js"></script> -->
+  <script type="module" src="./js/map.js"></script>
+  <!-- <script type="module">import * as module from "./js/map.js";console.log(module.islandData)</script> -->
 </head>
 
 <body>
-  <div class="container"><div id="map"></div></div>
-  <script src="./data/portData.js"></script>
-  <script src="./data/seaRouteData.js"></script>
-  <script type="module" src="./js/map.js"></script>
+  <div id="sidebar" class="leaflet-sidebar collapsed">
+    <div class="leaflet-sidebar-tabs">
+      <ul role="tablist">
+        <li><a href="#home" role="tab"><i class="fa fa-bars"></i></a></li>
+        <li><a href="#search" role="tab"><i class="fa fa-magnifying-glass"></i></a></li>
+        <li><a href="#user" role="tab"><i class="fa fa-user"></i></a></li>
+        <li><a href="#setting" role="tab"><i class="fa fa-gear"></i></a></li>
+      </ul>
+      <ul role="tablist">
+        <li><a href="#info" role="tab"><i class="fa fa-circle-info"></i></a></li>
+        <li><a href="https://github.com/yykuso/islandmap"><i class="fa fa-github"></i></a></li>
+      </ul>
+    </div>
+
+    <div class="leaflet-sidebar-content">
+      <div class="leaflet-sidebar-pane" id="home">
+        <h1 class="leaflet-sidebar-header">
+          島マップ
+          <span class="leaflet-sidebar-close"><i class="fa fa-caret-left"></i></span>
+        </h1>
+        <h2>実装前だよ！</h2>
+      </div>
+
+      <div class="leaflet-sidebar-pane" id="search">
+        <h1 class="leaflet-sidebar-header">
+          検索
+          <span class="leaflet-sidebar-close"><i class="fa fa-caret-left"></i></span>
+        </h1>
+        <h2>実装前だよ！</h2>
+      </div>
+
+      <div class="leaflet-sidebar-pane" id="user">
+        <h1 class="leaflet-sidebar-header">
+          ユーザー設定
+          <span class="leaflet-sidebar-close"><i class="fa fa-caret-left"></i></span>
+        </h1>
+
+        <h2>ユーザ情報</h2>
+        <p>
+          <label>ユーザ名：<input type="text" id="user-name" size="20" value="名前を入力"></label>
+          <input type="button" value="更新" id="checkUserNameButton">
+        </p>
+        <p id="msg-user-name"></p>
+
+        <h2>ユーザ情報インポート</h2>
+        <p>JSON形式<input type="button" value="読み込む" class="right" id="checkImportUserJsonButton"></p>
+        <textarea name="textarea" id="input-user-json" rows="5" cols="50" placeholder="JSON形式:{&quot;name&quot;:&quot;ユーザ名&quot;,&quot;visited&quot;:[1,2,3],&quot;passed&quot;:[11,12,13],&quot;unreached&quot;:[101,102,103]}"></textarea>
+        <p id="msg-input-user-name"></p>
+        
+        <h2>ユーザ情報エクスポート</h2>
+        <p>JSON形式</p>
+        <textarea name="textarea" id="export-user-json" rows="5" cols="50" readonly></textarea>
+        <p>共有URL<input type="button" value="コピー" class="right" id="checkCopyUserUrlButton"></p>
+        <textarea name="textarea" id="export-user-url" rows="5" cols="50" readonly></textarea>
+        <p id="msg-export-user-url"></p>
+      </div>
+
+      <div class="leaflet-sidebar-pane" id="setting">
+        <h1 class="leaflet-sidebar-header">
+          設定
+          <span class="leaflet-sidebar-close"><i class="fa fa-caret-left"></i></span>
+        </h1>
+        <h2>実装前だよ！</h2>
+      </div>
+
+      <div class="leaflet-sidebar-pane" id="info">
+        <h1 class="leaflet-sidebar-header">
+          使用データについて
+          <span class="leaflet-sidebar-close"><i class="fa fa-caret-left"></i></span>
+        </h1>
+        <h2>地理院地図</h2>
+        <p>地図データは国土地理院の<a href='https://maps.gsi.go.jp/development/ichiran.html' target='_blank'>地理院タイル利用規約</a>に従って使用しています。</p>
+        <p>なお、写真(オルソ)については、以下のデータソースを使用しています。</p>
+        <ul>
+          <li>Landsat8画像（GSI,TSIC,GEO Grid/AIST）, Landsat8画像（courtesy of the U.S. Geological Survey）, 海底地形（GEBCO）</li>
+          <li>Images on 世界衛星モザイク画像 obtained from site <a href='https://lpdaac.usgs.gov/data_access' target='_blank'>https://lpdaac.usgs.gov/data_access</a> maintained by the NASA Land Processes Distributed Active Archive Center (LP DAAC), USGS/Earth Resources Observation and Science (EROS) Center, Sioux Falls, South Dakota, (Year). Source of image data product.</li>
+        </ul>
+        <h2>国土数値情報</h2>
+        <p>島データは<a href='https://nlftp.mlit.go.jp/ksj/gml/datalist/KsjTmplt-C23.html' target='_blank'>「国土数値情報（海岸線データ）」</a>および<a href='https://nlftp.mlit.go.jp/ksj/gml/datalist/KsjTmplt-W09-v2_2.html' target='_blank'>「国土数値情報（湖沼データ）」</a>を加工して作成しています。</p>
+        <p>港湾・航路データは<a href='https://nlftp.mlit.go.jp/ksj/gml/datalist/KsjTmplt-C02-v3_2.html' target='_blank'>「国土数値情報（港湾データ）」</a>を加工して作成しています。</p>
+      </div>
+    </div>
+  </div>
+
+  <div id="map"></div>
+
 </body>
 </html>

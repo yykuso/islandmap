@@ -62,3 +62,12 @@ html, body, .container {
     top: -0.5em;
     left: -0.5em;
 }
+
+#user textarea {
+    width: 95%;
+}
+
+#user .right {
+    float: right;
+    margin-right: 5%;
+}

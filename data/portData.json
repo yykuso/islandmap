@@ -1,4 +1,4 @@
-var portData = {
+{
 "type": "FeatureCollection",
 "name": "port",
 "crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:ESRI::104111" } },

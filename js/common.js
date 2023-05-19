@@ -40,3 +40,18 @@ function changeStatusByPopup(id, status){
         }
     }
 }
+
+/**
+ * ユーザ名を変更する
+ * @param {*} name 新しいユーザ名
+ */
+function changeUserName(name){
+	// localStorageからデータを取得する
+	let userData = JSON.parse(window.localStorage.getItem('userData'));
+
+	// ユーザ名を更新する
+	userData.name = name;
+
+	// localStorageに保存しておく
+	window.localStorage.setItem('userData', JSON.stringify(userData));
+}
