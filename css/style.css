@@ -153,3 +153,8 @@ html, body, .container {
     float: right;
     margin-right: 5%;
 }
+
+#user .message {
+    color: red;
+    margin-left: 5%;
+}

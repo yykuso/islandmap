@@ -3,42 +3,36 @@ let userData = {};
 // URLクエリパラメータからユーザデータを取得
 // TODO 例外処理を書く
 if (window.location.search) {
-const url = new URL(window.location.href);
-const userParam = url.searchParams.get('user');
-const obj = decodeURIComponent(userParam);
-const loadUserData = JSON.parse(obj);
+	const url = new URL(window.location.href);
+	const userParam = url.searchParams.get('user');
+	const obj = decodeURIComponent(userParam);
+	const loadUserData = JSON.parse(obj);
 
-// localStorageにデータが有る場合は、上書きするか確認する。
-let s = JSON.parse(window.localStorage.getItem('userData'));
-if (s){
-	let checkUpdate = window.confirm("すでにユーザデータがあります。上書きしますか？");
-	if (checkUpdate) {
-	window.localStorage.setItem('userData', JSON.stringify(loadUserData));
-	window.alert("データの読み込みが完了しました。");
-	url.searchParams.delete('user');
-	history.replaceState('', '', url.pathname);
+	// localStorageにデータが有る場合は、上書きするか確認する。
+	let s = JSON.parse(window.localStorage.getItem('userData'));
+	if (s){
+		let checkUpdate = window.confirm("すでにユーザデータがあります。上書きしますか？");
+		if (checkUpdate) {
+		window.localStorage.setItem('userData', JSON.stringify(loadUserData));
+		window.alert("データの読み込みが完了しました。");
+		url.searchParams.delete('user');
+		history.replaceState('', '', url.pathname);
+		} else {
+		window.alert("データの読み込みをキャンセルしました。");
+		}
 	} else {
-	window.alert("データの読み込みをキャンセルしました。");
+		window.localStorage.setItem('userData', JSON.stringify(loadUserData));
+		window.alert("データの読み込みが完了しました。");
+		url.searchParams.delete('user');
+		history.replaceState('', '', url.pathname);
 	}
-} else {
-	window.localStorage.setItem('userData', JSON.stringify(loadUserData));
-	window.alert("データの読み込みが完了しました。");
-	url.searchParams.delete('user');
-	history.replaceState('', '', url.pathname);
 }
-}
+
 // localStorageからデータを取得
-// TODO 例外処理を書く
-userData = JSON.parse(window.localStorage.getItem('userData'));
+userData = loadLocalStorage('userData');
 
-// localstorageにデータがない場合、初期化
-if(!userData) {
-userData = {"version":1,"name":"","visited":[],"passed":[],"unreached":[]};
-window.localStorage.setItem('userData', JSON.stringify(userData));
-}
-
+// マップデータの読み込み
 dispLoading();
-// マップデータの作成
 const islandData = await loadIslandData();
 removeLoading();
 
@@ -145,7 +139,7 @@ style: function(feature){
 	color: getColor(feature.properties.id),
 	fillColor: getColor(feature.properties.id),
 	fillOpacity: 0.3,
-	weight: 5,
+	weight: 2.5,
 	opacity: 1,
 	}
 },
@@ -213,13 +207,7 @@ onEachFeature: function onEachFeature(feature, layer) {
 attribution: nlftpPortAttribution
 })
 
-// サイドバー
-var sidebar = L.control.sidebar({
-	autopan: false,
-	closeButton: true,
-	container: 'sidebar',
-	position: 'left',
-}).addTo(map)
+
 
 var geojsonLayer = {
 "島到達情報": islandMap,
@@ -243,6 +231,14 @@ L.control.layers(
 ).addTo(map);
 }
 
+// サイドバー
+var sidebar = L.control.sidebar({
+	autopan: false,
+	closeButton: true,
+	container: 'sidebar',
+	position: 'left',
+}).addTo(map)
+
 sidebar.on('content', function(ev) {
 
 	if (ev.id = 'user'){
@@ -251,10 +247,11 @@ sidebar.on('content', function(ev) {
 		
 		function userNameButtonClick(){
 			let text = userNameTextForm.value;
-			changeUserName(text);
+			let check = changeUserName(text);
 
 			let msg = document.getElementById('msg-user-name');
-			msg.innerText = 'ユーザ名「' + text + '」で更新しました。';
+			if (check) msg.innerText = 'ユーザ名「' + text + '」で更新しました。';
+			else msg.innerText = 'ユーザ名の更新に失敗しました。';
 		}
 		
 		document.getElementById('msg-user-name').innerText = '';
