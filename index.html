@@ -15,7 +15,7 @@
     crossorigin="" media="print" onload="this.media='all'" />
   <link rel="stylesheet" href="https://www.unpkg.com/leaflet-sidebar-v2@3.2.3/css/leaflet-sidebar.css"
     integrity="sha256-roHkkDjezddQLHoNNvsWCVfLgLLIOHPjGoxx04EbJ9Q="
-    crossorigin=""  media="print" onload="this.media='all'"/>
+    crossorigin="" />
   <link href="./css/style.css" rel="stylesheet" />
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
@@ -88,12 +88,12 @@
         </p>
         <p id="msg-user-name" class="message"></p>
 
-        <h2>ユーザ情報インポート</h2>
+        <h2>インポート</h2>
         <p>JSON形式<input type="button" value="読み込み" class="right" id="checkImportUserJsonButton"></p>
         <textarea name="textarea" id="input-user-json" rows="5" cols="50" placeholder="{&quot;version&quot;:1,&quot;name&quot;:&quot;ユーザ名&quot;,&quot;visited&quot;:[1,2,3],&quot;passed&quot;:[11,12,13],&quot;unreached&quot;:[101,102,103]}"></textarea>
         <p id="msg-input-user-name" class="message"></p>
         
-        <h2>ユーザ情報エクスポート</h2>
+        <h2>エクスポート</h2>
         <p>JSON形式</p>
         <textarea name="textarea" id="export-user-json" rows="5" cols="50" readonly></textarea>
         <p>共有URL<input type="button" value="コピー" class="right" id="checkCopyUserUrlButton"></p>

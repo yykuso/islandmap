@@ -50,7 +50,7 @@ async function loadIslandData() {
 /**
  * localStorageのユーザ情報を初期化する
  * @param {string} key localStorageのkey
- * @return {bool} 初期化の実行結果
+ * @returns {boolean} 初期化の実行結果
  */
 function initializeLocalStorage(key) {
 	if (!window.localStorage || key.length == 0) return false;
@@ -74,7 +74,7 @@ function initializeLocalStorage(key) {
 /**
  * localStorageからデータを読み込む
  * @param {string} key localStorageのkey
- * @return {*} 読み込みしたデータ(パース済みJSON)を返す。失敗した場合はnull
+ * @returns {object} 読み込みしたデータ(パース済みJSON)を返す。失敗した場合はnull
  */
 function loadLocalStorage(key) {
 	if (!window.localStorage || key.length == 0) return null;
@@ -101,8 +101,8 @@ function loadLocalStorage(key) {
 /**
  * localStorageに保存する
  * @param {string} key localStorageのkey
- * @param {*} data 保存データ(パース済みJSON)
- * @return {bool} 初期化の実行結果
+ * @param {object} data 保存データ(パース済みJSON)
+ * @returns {boolean} 初期化の実行結果
  */
 function saveLocalStorage(key, data) {
 	if (!window.localStorage || key.length == 0) return false;
@@ -165,7 +165,7 @@ function changeStatusByPopup(id, status) {
 /**
  * ユーザ名を変更する
  * @param {string} name 新しいユーザ名
- * @return {bool} 変更の実行結果
+ * @returns {boolean} 変更の実行結果
  */
 function changeUserName(name) {
 	try {
@@ -183,6 +183,134 @@ function changeUserName(name) {
 		return false;
 	}
 
+}
+
+/**
+ * URLから指定したパラメータの値を取得する
+ * @param {string} url 対象URL (URL型ではない)
+ * @param {string} key パラメータ名
+ * @returns {*} 読み込みしたデータ(パース済みJSON)を返す。失敗した場合とパラメータがない場合はnull
+ */
+function loadSearchParam(url, param) {
+	if (url.length == 0 || key.length == 0) return null;
+
+	try {
+		let u = new URL(window.location.href);
+		let p = u.searchParams.get(key);
+		let o = decodeURIComponent(p);
+		return JSON.parse(o);
+		
+	} catch (error) {
+		console.log("error: URLパラメータの解析に失敗(" + url + "," + key + ")");
+		return null;
+	}
+}
+
+/**
+ * URLから複数パラメータを取得する
+ * @param {string} url 対象URL (URL型ではない)
+ * @returns {object} 読み込みしたデータ(パース済みJSON)を返す。空の場合は{}、失敗した場合はnull
+ */
+function loadAnySearchParams(url) {
+	if (url.length == 0) return null;
+
+	try {
+		let u = new URL(window.location.href);
+		let p = u.searchParams;
+		let params = new URLSearchParams(p);
+		let obj = Object.fromEntries(params);
+
+		Object.keys(obj).forEach(function(key) {
+			try {
+				let o = obj[key];
+				obj[key] = JSON.parse(o);
+			} catch {
+				// JSONパース失敗したときは何もせずに返す
+			}
+		});
+
+		return obj;
+
+	} catch (error) {
+		console.log("error: URLパラメータの解析に失敗(" + url + ")");
+		return null;
+	} 
+}
+
+/**
+ * ユーザ設定JSONのフォーマットをチェックする
+ * @param {object} data 確認対象のデータ(パース済みJSON)
+ * @returns {boolean} 結果
+ */
+function checkUserJson(data) {
+	try {
+		let check = true;
+
+		// version 1 のとき
+		if (data['version'] == 1) {
+			// name：string型で中身は空でも良い
+			if (typeof data['name'] != "string") {
+				check = false;
+			}
+			
+			// TODO: 同じ数字が同じステータスor別ステータスにあるときは削除入れるべき
+			// visited：数字の入ったオブジェクトが格納されていること
+			if (typeof data['visited'] == "object"){
+				let obj = data['visited'];
+				Object.keys(obj).forEach(function(key) {
+					if (typeof obj[key] != "number") check = false;
+				});
+			} else {
+				check = false;
+			}
+
+			// passed：数字の入ったオブジェクトが格納されていること
+			if (typeof data['passed'] == "object"){
+				let obj = data['passed'];
+				Object.keys(obj).forEach(function(key) {
+					if (typeof obj[key] != "number") check = false;
+				});
+			} else {
+				check = false;
+			}
+
+			// unreached：数字の入ったオブジェクトが格納されていること
+			if (typeof data['unreached'] == "object"){
+				let obj = data['unreached'];
+				Object.keys(obj).forEach(function(key) {
+					if (typeof obj[key] != "number") check = false;
+				});
+			} else {
+				check = false;
+			}
+			
+		} else {  // version情報がおかしいとき
+			check = false;
+		}
+		
+		return check;
+
+	} catch (error) {
+		console.log("error:フォーマットチェック失敗(" + data + ")");
+		return false;
+	}
+
+}
+
+/**
+ * ユーザ情報JSONをパースする
+ * @param {string} data パース対象のデータ(パース前JSON)
+ * @returns {object} パース済みJSON
+ */
+function parseUserJson(data) {
+	if (data.length == 0) return null;
+
+	try {
+		return JSON.parse(data);
+	} catch (error) {
+		console.log("error:パース失敗(" + data + ")");
+		return null;
+	}
 }
 
 /**

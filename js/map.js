@@ -1,41 +1,44 @@
 let userData = {};
 
 // URLクエリパラメータからユーザデータを取得
-// TODO 例外処理を書く
 if (window.location.search) {
-	const url = new URL(window.location.href);
-	const userParam = url.searchParams.get('user');
-	const obj = decodeURIComponent(userParam);
-	const loadUserData = JSON.parse(obj);
 
-	// localStorageにデータが有る場合は、上書きするか確認する。
-	let s = JSON.parse(window.localStorage.getItem('userData'));
-	if (s){
-		let checkUpdate = window.confirm("すでにユーザデータがあります。上書きしますか？");
+	let a = loadAnySearchParams(window.location.href);
+	let loadUserData = a.user;
+	
+	if(checkUserJson(loadUserData)){
+		let checkUpdate = true;
+
+		// localStorageにデータが有る場合は、上書きするか確認する。
+		if (loadLocalStorage('userData')){
+			checkUpdate = window.confirm("すでにユーザデータがあります。上書きしますか？");
+			if (!checkUpdate) {
+				window.alert("データの読み込みをキャンセルしました。");
+			}
+		}
+
 		if (checkUpdate) {
-		window.localStorage.setItem('userData', JSON.stringify(loadUserData));
-		window.alert("データの読み込みが完了しました。");
-		url.searchParams.delete('user');
-		history.replaceState('', '', url.pathname);
-		} else {
-		window.alert("データの読み込みをキャンセルしました。");
+			saveLocalStorage('userData', loadUserData);
+			window.alert("データの読み込みが完了しました。");
+			const url = new URL(window.location.href);
+			url.searchParams.delete('user');
+			history.replaceState('', '', url.pathname);
 		}
 	} else {
-		window.localStorage.setItem('userData', JSON.stringify(loadUserData));
-		window.alert("データの読み込みが完了しました。");
-		url.searchParams.delete('user');
-		history.replaceState('', '', url.pathname);
+		// JSONフォーマットチェックが失敗した場合
+		window.alert("JSONフォーマットがおかしいようです。");
 	}
 }
 
 // localStorageからデータを取得
+// TODO: 変なデータが入ってたときにnullが変えるがその例外処理を入れる
+// TODO: このタイミングでデータクレンジングしたほうがいいかも
 userData = loadLocalStorage('userData');
 
 // マップデータの読み込み
 dispLoading();
 const islandData = await loadIslandData();
 removeLoading();
-
 
 // 港湾データの読み込み
 const portData = await (await fetch("./data/portData.json")).json();
@@ -58,15 +61,7 @@ var notFoundColor = "#00FF00";
 // タイル選択
 var gsiAttribution = [
 "<a href='https://maps.gsi.go.jp/development/ichiran.html'>国土地理院</a>"
-]
-var nlftpIslandAttribution = [];
-// [
-// 	"<a href='https://nlftp.mlit.go.jp/ksj/gml/datalist/KsjTmplt-C23.html' target='_blank'>「国土数値情報（海岸線データ）」</a>、<a href='https://nlftp.mlit.go.jp/ksj/gml/datalist/KsjTmplt-W09-v2_2.html' target='_blank'>「国土数値情報（湖沼データ）」</a>を加工して作成"
-// ]
-var nlftpPortAttribution = [];
-// [
-// 	"<a href='https://nlftp.mlit.go.jp/ksj/gml/datalist/KsjTmplt-C02-v3_2.html' target='_blank'>「国土数値情報（港湾データ）」</a>を加工して作成"
-// ]
+];
 
 var gsiPaleLayer = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png',{
 	minZoom: 2,
@@ -158,10 +153,7 @@ onEachFeature: function (feature, layer) {
 			+ "</form>";
 	layer.bindPopup(popupText);
 	}
-},
-// 引用情報
-attribution: nlftpIslandAttribution
-}).addTo(map);
+}}).addTo(map);
 
 
 // 港湾データ
@@ -183,10 +175,7 @@ onEachFeature: function onEachFeature(feature, layer) {
 	if(feature.properties && feature.properties.N09_004) {
 	layer.bindPopup(feature.properties.N09_004);
 	}
-},
-// 引用情報
-attribution: nlftpPortAttribution
-})
+}})
 
 
 // 航路データ
@@ -202,10 +191,7 @@ onEachFeature: function onEachFeature(feature, layer) {
 	if(feature.properties && feature.properties.N09_006) {
 	layer.bindPopup(feature.properties.N09_006);
 	}
-},
-// 引用情報
-attribution: nlftpPortAttribution
-})
+}})
 
 
 
@@ -245,6 +231,9 @@ sidebar.on('content', function(ev) {
 		
 		const userData = JSON.parse(window.localStorage.getItem('userData'));
 		
+		// TODO: 関数を別だしして整理もする
+
+		// ユーザ名更新
 		function userNameButtonClick(){
 			let text = userNameTextForm.value;
 			let check = changeUserName(text);
@@ -260,19 +249,31 @@ sidebar.on('content', function(ev) {
 		let checkUserNameButton = document.getElementById('checkUserNameButton');
 		checkUserNameButton.addEventListener('click', userNameButtonClick);
 
-
+		// インポートJSON
 		function importUserJsonButtonClick(){
+			let jsonData = parseUserJson(userImportJsonForm.value);
 			let msg = document.getElementById('msg-input-user-name');
-			msg.innerText = '実装前です。';
-		}
 
+			if (!jsonData) {
+				msg.innerText = 'インポートに失敗しました。JSONのフォーマットがおかしいようです。';
+			} else if (!checkUserJson(jsonData)) {
+				msg.innerText = 'インポートに失敗しました。データの中身がおかしいようです。';
+			} else {
+				saveLocalStorage('userData', jsonData);
+				msg.innerText = 'インポートに成功しました。再読込してください。';
+			}
+		}
 		document.getElementById('msg-input-user-name').innerText = '';
-		let userJsonForm = document.getElementById('export-user-json');
-		userJsonForm.value = JSON.stringify(userData);
+		let userImportJsonForm = document.getElementById('input-user-json');
 		let checkImportUserJsonButton = document.getElementById('checkImportUserJsonButton');
 		checkImportUserJsonButton.addEventListener('click', importUserJsonButtonClick);
 
+		// エクスポートJSON
+		let userJsonForm = document.getElementById('export-user-json');
+		userJsonForm.value = JSON.stringify(userData);
 
+		// エクスポートURL
+		// TODO: JSONファイルのクレンジングもする
 		function copyUserUrlButtonClick(){
 			let text = userUrlForm.value;
 			navigator.clipboard.writeText(text);
@@ -280,7 +281,6 @@ sidebar.on('content', function(ev) {
 			let msg = document.getElementById('msg-export-user-url');
 			msg.innerText = 'コピーしました。';
 		}
-
 		document.getElementById('msg-export-user-url').innerText = '';
 		const exportUrl = new URL(window.location.href);
 		exportUrl.hash = '';
