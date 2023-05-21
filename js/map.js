@@ -289,6 +289,23 @@ sidebar.on('content', function(ev) {
 		userUrlForm.value = exportUrl.href.replace(/%2C/g, ',');
 		let checkCopyUserUrlButton = document.getElementById('checkCopyUserUrlButton');
 		checkCopyUserUrlButton.addEventListener('click', copyUserUrlButtonClick);
+
+		// データ削除
+		function userDeleteButtonClick(){
+			let msg = document.getElementById('msg-delete-user');
+			let checkUpdate = window.confirm("本当に削除しますか？");
+			if (checkUpdate) {
+				if (initializeLocalStorage('userData')) {
+					msg.innerText = 'ユーザデータを削除しました。';
+				} else {
+					msg.innerText = 'ユーザデータの削除失敗しました。';
+				}
+			}
+		}
+		
+		document.getElementById('msg-delete-user').innerText = '';
+		let checkDeleteUserButton = document.getElementById('checkDeleteUserButton');
+		checkDeleteUserButton.addEventListener('click', userDeleteButtonClick);
 	}
 });
 
