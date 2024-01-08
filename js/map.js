@@ -141,15 +141,89 @@ style: function(feature){
 // ポップアップ
 onEachFeature: function (feature, layer) {
 	if(feature.properties && feature.properties.islandName){
+		var islandInfo = {};
+
+		// プロパティ設定
+		switch (feature.properties.populatedFlag){
+			case true:
+				islandInfo['populated'] = "有人";
+				break;
+			case false:
+				islandInfo['populated'] = "無人";
+				break;
+			default:
+				islandInfo['populated'] = "不明";
+		}
+		switch (feature.properties.landFlag){
+			case true:
+				islandInfo['land'] = feature.properties.landName;
+				break;
+			case false:
+				islandInfo['land'] = "-";
+				break;
+			default:
+				islandInfo['land'] = "不明";
+		}
+		switch (feature.properties.bridgeFlag){
+			case true:
+				islandInfo['bridge'] = "橋繋がり";
+				break;
+			case false:
+				islandInfo['bridge'] = "-";
+				break;
+			default:
+				islandInfo['bridge'] = "不明";
+		}
+		switch (feature.properties.shipRoute){
+			case true:
+				islandInfo['ship'] = feature.properties.shipName;
+				break;
+			case false:
+				islandInfo['ship'] = "-";
+				break;
+			default:
+				islandInfo['ship'] = "不明";
+		}
+		switch (feature.properties.flightRoute){
+			case true:
+				islandInfo['flight'] = feature.properties.flightName;
+				break;
+			case false:
+				islandInfo['flight'] = "-";
+				break;
+			default:
+				islandInfo['flight'] = "不明";
+		}
+
 	var popupText= "<table>"
 			+ "<tr><td>ＩＤ：</td><td>" + feature.properties.id + "</td></tr>"
 			+ "<tr><td>島名：</td><td>" + feature.properties.islandName + "</td></tr>"
 			+ "<tr><td>所属：</td><td>" + feature.properties.prefectures + " " + feature.properties.cities + "</td></tr>"
+			+ "<tr><td>定住：</td><td>" + islandInfo.populated + "</td></tr>"
+			+ "<tr><td>陸繋：</td><td>" + islandInfo.land + "</td></tr>"
+			+ "<tr><td>橋繋：</td><td>" + islandInfo.bridge + "</td></tr>"
+			+ "<tr><td>航路：</td><td>" + islandInfo.ship + "</td></tr>"
+			+ "<tr><td>空路：</td><td>" + islandInfo.flight + "</td></tr>"
 			+ "</table>";
+
+	if (userData.visited.includes(feature.properties.id)){
+		islandInfo['visited'] = "checked=\"checked\"";
+		islandInfo['passed'] = "";
+		islandInfo['unreached'] = "";
+	} else if (userData.passed.includes(feature.properties.id)){
+		islandInfo['visited'] = "";
+		islandInfo['passed'] = "checked=\"checked\"";
+		islandInfo['unreached'] = "";
+	} else {
+		islandInfo['visited'] = "";
+		islandInfo['passed'] = "";
+		islandInfo['unreached'] = "checked=\"checked\"";
+	}
+
 	popupText += "<form name=\"status\">"
-			+ "<label><input type=\"radio\" name=\"legend\" value=\"visited\" onchange=\"changeStatusByPopup(" + feature.properties.id + ",'visited');\">上陸済み</label><br>"
-			+ "<label><input type=\"radio\" name=\"legend\" value=\"passed\" onchange=\"changeStatusByPopup(" + feature.properties.id + ",'passed');\">寄港・通過済み</label><br>"
-			+ "<label><input type=\"radio\" name=\"legend\" value=\"unreached\" onchange=\"changeStatusByPopup(" + feature.properties.id + ",'unreached');\">未到達</label>"
+			+ "<label><input type=\"radio\" name=\"legend\" value=\"visited\" onchange=\"changeStatusByPopup(" + feature.properties.id + ",'visited');\"" + islandInfo.visited + ">上陸済み</label><br>"
+			+ "<label><input type=\"radio\" name=\"legend\" value=\"passed\" onchange=\"changeStatusByPopup(" + feature.properties.id + ",'passed');\"" + islandInfo.passed + ">寄港・通過済み</label><br>"
+			+ "<label><input type=\"radio\" name=\"legend\" value=\"unreached\" onchange=\"changeStatusByPopup(" + feature.properties.id + ",'unreached');\"" + islandInfo.unreached + ">未到達</label>"
 			+ "</form>";
 	layer.bindPopup(popupText);
 	}
