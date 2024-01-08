@@ -42,6 +42,7 @@ removeLoading();
 
 // 港湾データの読み込み
 const portData = await (await fetch("./data/portData.json")).json();
+const seaRouteDataSuchi = await (await fetch("./data/seaRouteDataSuchi.json")).json();
 const seaRouteData = await (await fetch("./data/seaRouteData.json")).json();
 
 
@@ -252,7 +253,7 @@ onEachFeature: function onEachFeature(feature, layer) {
 }})
 
 
-// 航路データ
+// 航路データ（自作）
 var seaRouteMap = L.geoJson(seaRouteData, {
 // ラインの表示スタイル
 style: {
@@ -262,17 +263,34 @@ style: {
 },
 // ポップアップ
 onEachFeature: function onEachFeature(feature, layer) {
-	if(feature.properties && feature.properties.N09_006) {
-	layer.bindPopup(feature.properties.N09_006);
+	if(feature.properties && feature.properties.businessName) {
+	layer.bindPopup(feature.properties.businessName + "<br/>" + feature.properties.portName1 + " ～ " + feature.properties.portName2);
 	}
 }})
 
+
+// 航路データ（国土数値情報）
+var seaRouteMapSuchi = L.geoJson(seaRouteDataSuchi, {
+// ラインの表示スタイル
+style: {
+	color: '#FC9000',
+	weight: 3,
+	opacity: 0.5,
+},
+// ポップアップ
+onEachFeature: function onEachFeature(feature, layer) {
+	if(feature.properties && feature.properties.N09_007) {
+	layer.bindPopup(feature.properties.N09_009 + "<br/>" + feature.properties.N09_007);
+	}
+}})
+	
 
 
 var geojsonLayer = {
 "島到達情報": islandMap,
 "港湾情報": portMap,
-"航路情報": seaRouteMap,
+"航路情報（国土数値情報）": seaRouteMapSuchi,
+"航路情報（作成中）": seaRouteMap,
 }
 
 // レイヤーコントロールを追加
