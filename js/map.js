@@ -264,8 +264,14 @@ style: {
 // ポップアップ
 onEachFeature: function onEachFeature(feature, layer) {
 	if(feature.properties && feature.properties.businessName) {
-		var url = "<a href=\"" + feature.properties.url + "\" target=\"_blank\">タイムスケジュール</a>";
-		layer.bindPopup(feature.properties.businessName + "<br/>" + feature.properties.portName1 + " ～ " + feature.properties.portName2 + "<br/>" + url);
+		var popupText = feature.properties.businessName + "<br/>" + feature.properties.portName1 + " ～ " + feature.properties.portName2;
+
+		if(feature.properties.information) {
+			popupText += "<br/>" + feature.properties.information;
+		}
+
+		popupText += "<br/>" + "<a href=\"" + feature.properties.url + "\" target=\"_blank\">タイムスケジュール</a>";
+		layer.bindPopup(popupText);
 	}
 }})
 
