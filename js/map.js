@@ -258,13 +258,14 @@ var seaRouteMap = L.geoJson(seaRouteData, {
 // ラインの表示スタイル
 style: {
 	color: '#FC9000',
-	weight: 3,
-	opacity: 0.5,
+	weight: 4,
+	opacity: 1.0,
 },
 // ポップアップ
 onEachFeature: function onEachFeature(feature, layer) {
 	if(feature.properties && feature.properties.businessName) {
-	layer.bindPopup(feature.properties.businessName + "<br/>" + feature.properties.portName1 + " ～ " + feature.properties.portName2);
+		var url = "<a href=\"" + feature.properties.url + "\" target=\"_blank\">タイムスケジュール</a>";
+		layer.bindPopup(feature.properties.businessName + "<br/>" + feature.properties.portName1 + " ～ " + feature.properties.portName2 + "<br/>" + url);
 	}
 }})
 
