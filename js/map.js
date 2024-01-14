@@ -270,7 +270,7 @@ onEachFeature: function onEachFeature(feature, layer) {
 			popupText += "<br/>" + feature.properties.information;
 		}
 
-		popupText += "<br/>" + "<a href=\"" + feature.properties.url + "\" target=\"_blank\">タイムスケジュール</a>";
+		popupText += "<br/>" + "<a href=\"" + feature.properties.url + "\" target=\"_blank\">運航スケジュール</a>";
 		layer.bindPopup(popupText);
 	}
 }})
