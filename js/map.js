@@ -256,10 +256,32 @@ onEachFeature: function onEachFeature(feature, layer) {
 // 航路データ（自作）
 var seaRouteMap = L.geoJson(seaRouteData, {
 // ラインの表示スタイル
-style: {
-	color: '#FC9000',
-	weight: 4,
-	opacity: 1.0,
+style: function style(feature) {
+	let colorCode = "#000000"
+
+	if(feature.properties.id) {
+		let seaRouteId = feature.properties.id;
+		let sourceNumber = String(Math.floor(seaRouteId/10));
+		let i32 = CRC32.str(sourceNumber);
+		let colorR = (i32 & 0xFF000000) >>> 24;
+		let colorG = (i32 & 0x00FF0000) >>> 16;
+		let colorB = (i32 & 0x0000FF00) >>> 8;
+
+		function toHex(b) {
+			let str = b.toString(16);
+			if (2 <= str.length) { return str; }
+			else { return "0" + str; }
+		}
+
+		colorCode = "#" + toHex(colorR) + toHex(colorG) + toHex(colorB);
+
+	}
+
+	return {
+		color: colorCode,
+		weight: 3,
+		opacity: 1.0
+	}
 },
 // ポップアップ
 onEachFeature: function onEachFeature(feature, layer) {
