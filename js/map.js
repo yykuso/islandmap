@@ -199,13 +199,24 @@ onEachFeature: function (feature, layer) {
 	var popupText= "<table>"
 			+ "<tr><td>ＩＤ：</td><td>" + feature.properties.id + "</td></tr>"
 			+ "<tr><td>島名：</td><td>" + feature.properties.islandName + "</td></tr>"
-			+ "<tr><td>所属：</td><td>" + feature.properties.prefectures + " " + feature.properties.cities + "</td></tr>"
-			+ "<tr><td>定住：</td><td>" + islandInfo.populated + "</td></tr>"
-			+ "<tr><td>陸繋：</td><td>" + islandInfo.land + "</td></tr>"
-			+ "<tr><td>橋繋：</td><td>" + islandInfo.bridge + "</td></tr>"
-			+ "<tr><td>航路：</td><td>" + islandInfo.ship + "</td></tr>"
-			+ "<tr><td>空路：</td><td>" + islandInfo.flight + "</td></tr>"
-			+ "</table>";
+			+ "<tr><td>所属：</td><td>" + feature.properties.prefectures + " " + feature.properties.cities + "</td></tr>";
+	if (islandInfo.populated != "不明") {
+		popupText += "<tr><td>定住：</td><td>" + islandInfo.populated + "</td></tr>"
+	}
+	if (islandInfo.land != "不明" && islandInfo.land != "-") {
+		popupText += "<tr><td>陸繋：</td><td>" + islandInfo.land + "</td></tr>"
+	}
+	if (islandInfo.bridge != "不明" && islandInfo.bridge != "-") {
+		popupText += "<tr><td>橋繋：</td><td>" + islandInfo.bridge + "</td></tr>"
+	}
+	if (islandInfo.ship != "不明" && islandInfo.ship != "-") {
+		popupText += "<tr><td>航路：</td><td>" + islandInfo.ship + "</td></tr>"
+	}
+	if (islandInfo.flight != "不明" && islandInfo.flight != "-") {
+		popupText += "<tr><td>空路：</td><td>" + islandInfo.flight + "</td></tr>"
+	}
+
+	popupText += "</table>";
 
 	if (userData.visited.includes(feature.properties.id)){
 		islandInfo['visited'] = "checked=\"checked\"";
@@ -347,6 +358,20 @@ var sidebar = L.control.sidebar({
 }).addTo(map)
 
 sidebar.on('content', function(ev) {
+
+	if (ev.id = 'home'){
+
+		// TODO ここのコードは改めて整理する
+		let userData = loadLocalStorage('userData');
+		
+		let userVisitedNum = userData.visited.length;
+		let userPassedNum = userData.passed.length;
+		let reachedLevel = userVisitedNum*5 + userPassedNum;
+
+		document.getElementById("visited-number").innerText = "上陸済み　　　：" + userVisitedNum + " 島";
+		document.getElementById("passed-number").innerText = "寄港・通過済み：" + userPassedNum + " 島";
+		document.getElementById("reached-level").innerText = "到達レベル　　：Lv." + reachedLevel;
+	}
 
 	if (ev.id = 'user'){
 		
