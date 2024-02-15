@@ -43,7 +43,7 @@ removeLoading();
 // 港湾データの読み込み
 const portData = await (await fetch("./data/portData.json")).json();
 const seaRouteDataSuchi = await (await fetch("./data/seaRouteDataSuchi.json")).json();
-const seaRouteData = await (await fetch("./data/seaRouteData.json")).json();
+const seaRouteData = await (await fetch("./data/seaRouteData.geojson")).json();
 
 
 // マップの表示
@@ -270,8 +270,24 @@ var seaRouteMap = L.geoJson(seaRouteData, {
 style: function style(feature) {
 	let colorCode = "#000000"
 
-	if(feature.properties.id) {
-		let seaRouteId = feature.properties.id;
+	if(feature.properties.routeId) {
+		let seaRouteId = feature.properties.routeId;
+		let sourceNumber = String(Math.floor(seaRouteId));
+		let i32 = CRC32.str(sourceNumber);
+		let colorR = (i32 & 0xFF000000) >>> 24;
+		let colorG = (i32 & 0x00FF0000) >>> 16;
+		let colorB = (i32 & 0x0000FF00) >>> 8;
+
+		function toHex(b) {
+			let str = b.toString(16);
+			if (2 <= str.length) { return str; }
+			else { return "0" + str; }
+		}
+
+		colorCode = "#" + toHex(colorR) + toHex(colorG) + toHex(colorB);
+
+	} else if(feature.properties.lineId) {
+		let seaRouteId = feature.properties.lineId;
 		let sourceNumber = String(Math.floor(seaRouteId/10));
 		let i32 = CRC32.str(sourceNumber);
 		let colorR = (i32 & 0xFF000000) >>> 24;
@@ -297,7 +313,13 @@ style: function style(feature) {
 // ポップアップ
 onEachFeature: function onEachFeature(feature, layer) {
 	if(feature.properties && feature.properties.businessName) {
-		var popupText = feature.properties.businessName + "<br/>" + feature.properties.portName1 + " ～ " + feature.properties.portName2;
+		var popupText = feature.properties.businessName 
+
+		if(feature.properties.routeName) {
+			popupText += "<br/>" + feature.properties.routeName;
+		}
+
+		popupText += "<br/>（" + feature.properties.portName1 + "～" + feature.properties.portName2 + "）";
 
 		if(feature.properties.information) {
 			popupText += "<br/>" + feature.properties.information;
