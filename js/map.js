@@ -60,10 +60,10 @@ var notFoundColor = "#00FF00";
 
 // タイル選択
 var gsiAttribution = [
-	"<a href='https://maps.gsi.go.jp/development/ichiran.html'>国土地理院</a>"
+	"<a href='https://maps.gsi.go.jp/development/ichiran.html' target='_blank'>国土地理院</a>"
 ];
 var osmAttribution = [
-	"© <a href='http://osm.org/copyright'>OpenStreetMap</a> contributors"
+	"© <a href='https://www.openstreetmap.org/copyright/' target='_blank'>OpenStreetMap</a> contributors"
 ];
 
 var gsiPaleLayer = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png',{

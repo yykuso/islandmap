@@ -146,15 +146,36 @@
           使用データについて
           <span class="leaflet-sidebar-close"><i class="fa fa-caret-left"></i></span>
         </h1>
-        <h2>地理院地図</h2>
-        <p>地図データは国土地理院の<a href='https://maps.gsi.go.jp/development/ichiran.html' target='_blank'>地理院タイル利用規約</a>に従って使用しています。</p>
+        <h2>地図タイル</h2>
+        <h3>地理院地図</h3>
+        <p>国土地理院の<a href='https://maps.gsi.go.jp/development/ichiran.html' target='_blank'>地理院タイル利用規約</a>に従って使用しています。</p>
         <p>なお、写真(オルソ)については、以下のデータソースを使用しています。</p>
         <ul>
           <li>Landsat8画像（GSI,TSIC,GEO Grid/AIST）, Landsat8画像（courtesy of the U.S. Geological Survey）, 海底地形（GEBCO）</li>
           <li>Images on 世界衛星モザイク画像 obtained from site <a href='https://lpdaac.usgs.gov/data_access' target='_blank'>https://lpdaac.usgs.gov/data_access</a> maintained by the NASA Land Processes Distributed Active Archive Center (LP DAAC), USGS/Earth Resources Observation and Science (EROS) Center, Sioux Falls, South Dakota, (Year). Source of image data product.</li>
         </ul>
-        <h2>国土数値情報</h2>
+        <h3>OpenStreetMap</h3>
+        <p>OpenStreetMapの<a href='https://www.openstreetmap.org/copyright/' target='_blank'>Copyright and License</a>に従って使用しています。</p>
+        <h2>レイヤー</h2>
+        <h3>島到達情報</h3>
         <p>島データは<a href='https://nlftp.mlit.go.jp/ksj/gml/datalist/KsjTmplt-C23.html' target='_blank'>「国土数値情報（海岸線データ）」</a>および<a href='https://nlftp.mlit.go.jp/ksj/gml/datalist/KsjTmplt-W09-v2_2.html' target='_blank'>「国土数値情報（湖沼データ）」</a>を加工して作成しています。</p>
+        <p><a href='https://www.nijinet.or.jp/news/tabid/69/Default.aspx' target='_blank'>新版　日本の島ガイド『SHIMADAS（シマダス）』</a>を参考に作成しています。</p>
+        <p>掲載している島については、以下の条件を元に選択しています。</p>
+        <ul>
+          <li>国土地理院 <a href='https://www.gsi.go.jp/KOKUJYOHO/MENCHO/backnumber/GSI-menseki20230101.pdf' target='_blank'>令和5年全国都道府県市区町村別面積調</a>の付3 島面積に記載されている1平方キロメートル以上の島</li>
+          <li>1平方キロメートル未満の有人島</li>
+          <li>橋繋がりであったり干潮時に渡島できるような無人島（私有地等で渡ることができない島は除く）</li>
+          <li>埋立等による人口島を除く、一部例外あり（例：第二海堡）</li>
+          <li>北方領土を除く</li>
+          <li>その他の理由による特別選択</li>
+        </ul>
+        <p>島IDは"XXYYY"の5桁として、<a href='https://nlftp.mlit.go.jp/ksj/' target='_blank'>国土数値情報</a>にてダウンロードできる都道府県ごとのデータの数値2桁を"XX"、都道府県内での通番として"YYY"を付与しています。</p>
+        <p>なお、島情報は現在追加中となります。</p>
+        <h3>航路情報</h3>
+        <p>出発地と到着地が同じ遊覧航路は除外しています。ただし、途中で島に寄港できる航路は登録しています。</p>
+        <p>航路IDは"AABBCC"の6桁として、<a href='https://nlftp.mlit.go.jp/ksj/' target='_blank'>国土数値情報</a>にてダウンロードできる都道府県ごとのデータの数値2桁を"AA"、都道府県内での事業者の通番として"BB"、事業者内での航路通番して"CC"を付与しています。</p>
+        <p>色は自動で彩色しています。</p>
+        <h3>港湾情報</h3>
         <p>港湾データは<a href='https://nlftp.mlit.go.jp/ksj/gml/datalist/KsjTmplt-C02-v3_2.html' target='_blank'>「国土数値情報（港湾データ）」</a>を加工して作成しています。</p>
         <h2>その他</h2>
         <p>アイコン画像は<a href='https://www.flaticon.com/free-icons/japan' target='_blank'>「Japan icons created by iconixar - Flaticon」</a>を使用して作成しています。</p>
