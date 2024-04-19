@@ -60,7 +60,10 @@ var notFoundColor = "#00FF00";
 
 // タイル選択
 var gsiAttribution = [
-"<a href='https://maps.gsi.go.jp/development/ichiran.html'>国土地理院</a>"
+	"<a href='https://maps.gsi.go.jp/development/ichiran.html'>国土地理院</a>"
+];
+var osmAttribution = [
+	"© <a href='http://osm.org/copyright'>OpenStreetMap</a> contributors"
 ];
 
 var gsiPaleLayer = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png',{
@@ -83,14 +86,18 @@ var gsiOrtLayer = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/seamlessphot
 	maxZoom: 18,
 	opacity: 0.7,
 	attribution: gsiAttribution
-						// + ",「データソース：Landsat8画像（GSI,TSIC,GEO Grid/AIST）, Landsat8画像（courtesy of the U.S. Geological Survey）, 海底地形（GEBCO）」"
-						// + ",「Images on 世界衛星モザイク画像 obtained from site https://lpdaac.usgs.gov/data_access maintained by the NASA Land Processes Distributed Active Archive Center (LP DAAC), USGS/Earth Resources Observation and Science (EROS) Center, Sioux Falls, South Dakota, (Year). Source of image data product.」",
+});
+var osmLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+	minZoom: 2,
+	maxZoom: 18,
+	attribution: osmAttribution
 });
 var baseMap = {
 	"地理院 淡色地図": gsiPaleLayer.addTo(map),
 	"地理院 標準地図": gsiStdLayer,
 	"地理院 白地図": gsiBlankLayer,
 	"地理院 オルソ": gsiOrtLayer,
+	"OpenStreetMap": osmLayer
 };
 
 // 凡例の表示
