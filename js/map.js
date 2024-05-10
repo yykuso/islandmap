@@ -1,10 +1,31 @@
 let userData = {};
 
-// URLクエリパラメータからユーザデータを取得
-if (window.location.search) {
+let params = loadAnySearchParams(window.location.href);
 
-	let a = loadAnySearchParams(window.location.href);
-	let loadUserData = a.user;
+// モード設定 (デフォルト：重量モード)
+let mode = "heavy";
+
+// LocalStorageにモード設定がある場合は上書きする
+let currentMode = window.localStorage.getItem('mode');
+if (currentMode == "heavy" || currentMode == "light") {
+	mode = currentMode;
+}
+
+// クエリパラメータによってモード指定がある場合は上書きする
+let loadMode = params.mode;
+if (loadMode == "heavy" || loadMode == "light") {
+	window.localStorage.setItem('mode', loadMode);
+	mode = loadMode;
+}
+const url = new URL(window.location.href);
+url.searchParams.delete('mode');
+history.replaceState('', '', url.pathname);
+
+
+// URLクエリパラメータからユーザデータを取得
+if (window.location.search && params.user) {
+	// ユーザ情報の読み込み
+	let loadUserData = params.user;
 	
 	if(checkUserJson(loadUserData)){
 		let checkUpdate = true;
@@ -36,9 +57,12 @@ if (window.location.search) {
 userData = loadLocalStorage('userData');
 
 // マップデータの読み込み
-dispLoading();
-const islandData = await loadIslandData();
-removeLoading();
+let islandData; 
+if (mode != "light") {
+	dispLoading();
+	islandData = await loadIslandData();
+	removeLoading();
+}
 
 // 港湾データの読み込み
 const portData = await (await fetch("./data/portData.json")).json();
@@ -102,22 +126,37 @@ var baseMap = {
 
 // 凡例の表示
 const legend = L.control({position: 'bottomright'});
-legend.onAdd = function (map) {
-const div = L.DomUtil.create('div', 'info legend');
-const labels = [];
+if (mode != "light") {
+	legend.onAdd = function (map) {
+		const div = L.DomUtil.create('div', 'info legend');
+		const labels = [];
 
-// ユーザーデータが読み込めていた場合、名前を表示する
-if (userData && userData.name) {
-	labels.push(`<i style="background:` + '#FFFFFF'   + `"></i> ` + userData.name );
+		// ユーザーデータが読み込めていた場合、名前を表示する
+		if (userData && userData.name) {
+			labels.push(`<i style="background:` + '#FFFFFF'   + `"></i> ` + userData.name );
+		}
+
+		labels.push(`<i style="background:` + visitedColor   + `"></i> 上陸済み`);
+		labels.push(`<i style="background:` + passedColor    + `"></i> 寄港・通過済み`);
+		labels.push(`<i style="background:` + unreachedColor + `"></i> 未到達`);
+
+		div.innerHTML = labels.join('<br>');
+		return div;
+	};
+} else {
+	legend.onAdd = function (map) {
+		const div = L.DomUtil.create('div', 'info legend');
+		const labels = [];
+
+		// ユーザーデータが読み込めていた場合、名前を表示する
+		if (userData && userData.name) {
+			labels.push("軽量モード" );
+		}
+
+		div.innerHTML = labels.join('<br>');
+		return div;
+	};
 }
-
-labels.push(`<i style="background:` + visitedColor   + `"></i> 上陸済み`);
-labels.push(`<i style="background:` + passedColor    + `"></i> 寄港・通過済み`);
-labels.push(`<i style="background:` + unreachedColor + `"></i> 未到達`);
-
-div.innerHTML = labels.join('<br>');
-return div;
-};
 legend.addTo(map);
 
 // カラー選択
@@ -270,7 +309,7 @@ onEachFeature: function onEachFeature(feature, layer) {
 }})
 
 
-// 航路データ（自作）
+// 航路データ
 var seaRouteMap = L.geoJson(seaRouteData, {
 // ラインの表示スタイル
 style: function style(feature) {
@@ -336,10 +375,22 @@ onEachFeature: function onEachFeature(feature, layer) {
 	}
 }})
 
-var geojsonLayer = {
-	"島到達情報": islandMap,
-	"航路情報": seaRouteMap,
-	"港湾情報": portMap
+if (mode == "light") {
+	seaRouteMap.addTo(map);
+}
+
+var geojsonLayer;
+if (mode != "light") {
+	geojsonLayer = {
+		"島到達情報": islandMap,
+		"航路情報": seaRouteMap,
+		"港湾情報": portMap
+	}
+} else {
+	geojsonLayer = {
+		"航路情報": seaRouteMap,
+		"港湾情報": portMap
+	}
 }
 
 // レイヤーコントロールを追加
@@ -380,6 +431,32 @@ sidebar.on('content', function(ev) {
 		document.getElementById("visited-number").innerText = "上陸済み　　　：" + userVisitedNum + " 島";
 		document.getElementById("passed-number").innerText = "寄港・通過済み：" + userPassedNum + " 島";
 		document.getElementById("reached-level").innerText = "到達レベル　　：Lv." + reachedLevel;
+	}
+
+	if (ev.id = 'setting'){
+		
+		// モード変更
+		const checkChangeModeButton = document.getElementById('checkChangeModeButton');
+		if (mode != "light") {
+			checkChangeModeButton.value = "軽量モードに変更"
+		} else {
+			checkChangeModeButton.value = "重量モードに変更"
+		}
+
+		function changeModeButtonClick(){
+			let checkUpdate = window.confirm("本当にモード変更しますか？");
+			if (checkUpdate) {
+				if (mode != "light") {
+					window.localStorage.setItem('mode', "light");
+					
+				} else {
+					window.localStorage.setItem('mode', "heavy");
+				}
+				alert('モード変更が完了しました。画面の再読み込みをします。');
+				document.location.reload();
+			}
+		}
+		checkChangeModeButton.addEventListener('click', changeModeButtonClick);
 	}
 
 	if (ev.id = 'user'){
