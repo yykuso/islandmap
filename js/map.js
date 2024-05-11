@@ -377,6 +377,28 @@ onEachFeature: function onEachFeature(feature, layer) {
 		popupText += "<br/>" + "<a href=\"" + feature.properties.url + "\" target=\"_blank\">運航スケジュール</a>";
 		layer.bindPopup(popupText);
 	}
+	// Event
+	// マウスクリック時に発火
+	layer.on("click", function(e) {
+		var routeId = e.sourceTarget.feature.properties.routeId;
+	
+		// 同じRouteIDの航路を強調表示
+		seaRouteMap.getLayers().forEach( function(item) {
+			if (item.feature.properties.routeId == routeId) {
+				item.setStyle( { weight: 6, opacity: 1.0 } );
+				item.bringToFront();
+			}
+		})
+
+		// 表示されたポップアップが閉じた時に発火
+		layer.getPopup().on("remove", function () {
+			seaRouteMap.getLayers().forEach( function(item) {
+				if (item.feature.properties.routeId == routeId) {
+					seaRouteMap.resetStyle(item);
+				}
+			})
+		});
+	})
 }})
 
 if (mode == "light") {
