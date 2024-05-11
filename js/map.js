@@ -89,6 +89,9 @@ var gsiAttribution = [
 var osmAttribution = [
 	"© <a href='https://www.openstreetmap.org/copyright/' target='_blank'>OpenStreetMap</a> contributors"
 ];
+var opmAttribution = [
+	osmAttribution + ", <a href='http://viewfinderpanoramas.org/' target='_blank'>SRTM</a> | map style: © <a href='https://opentopomap.org/' target='_blank'>OpenTopoMap</a>"
+];
 
 var gsiPaleLayer = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png',{
 	minZoom: 2,
@@ -116,12 +119,18 @@ var osmLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
 	maxZoom: 18,
 	attribution: osmAttribution
 });
+var otmLayer = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',{
+	minZoom: 2,
+	maxZoom: 18,
+	attribution: opmAttribution
+});
 var baseMap = {
 	"地理院 淡色地図": gsiPaleLayer.addTo(map),
 	"地理院 標準地図": gsiStdLayer,
 	"地理院 白地図": gsiBlankLayer,
 	"地理院 オルソ": gsiOrtLayer,
-	"OpenStreetMap": osmLayer
+	"OpenStreetMap": osmLayer,
+	"OpenTopoMap": otmLayer
 };
 
 // 凡例の表示
@@ -147,12 +156,7 @@ if (mode != "light") {
 	legend.onAdd = function (map) {
 		const div = L.DomUtil.create('div', 'info legend');
 		const labels = [];
-
-		// ユーザーデータが読み込めていた場合、名前を表示する
-		if (userData && userData.name) {
-			labels.push("軽量モード" );
-		}
-
+		labels.push("軽量モード" );
 		div.innerHTML = labels.join('<br>');
 		return div;
 	};
@@ -379,17 +383,33 @@ if (mode == "light") {
 	seaRouteMap.addTo(map);
 }
 
+// OpenSeaMap
+var openSeaMap = L.tileLayer('http://tiles.openseamap.org/seamark/{z}/{x}/{y}.png', {
+	attribution: "Map style: <a href='http://www.openseamap.org' target='_blank'>OpenSeaMap</a> contributors"
+});
+
+// OpenRailwayMap
+var openRailwayMap = L.tileLayer('https://{s}.tiles.openrailwaymap.org/standard/{z}/{x}/{y}.png', {
+	maxZoom: 19,
+	attribution: "Map style: &copy; <a href='https://www.OpenRailwayMap.org' target='_blank'>OpenRailwayMap</a>"
+});
+
+
 var geojsonLayer;
 if (mode != "light") {
 	geojsonLayer = {
 		"島到達情報": islandMap,
 		"航路情報": seaRouteMap,
-		"港湾情報": portMap
+		"港湾情報": portMap,
+		"OpenSeaMap": openSeaMap,
+		"OpenRailwayMap": openRailwayMap
 	}
 } else {
 	geojsonLayer = {
 		"航路情報": seaRouteMap,
-		"港湾情報": portMap
+		"港湾情報": portMap,
+		"OpenSeaMap": openSeaMap,
+		"OpenRailwayMap": openRailwayMap
 	}
 }
 
