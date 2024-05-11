@@ -384,8 +384,8 @@ if (mode == "light") {
 }
 
 // OpenSeaMap
-var openSeaMap = L.tileLayer('http://tiles.openseamap.org/seamark/{z}/{x}/{y}.png', {
-	attribution: "Map style: <a href='http://www.openseamap.org' target='_blank'>OpenSeaMap</a> contributors"
+var openSeaMap = L.tileLayer('https://tiles.openseamap.org/seamark/{z}/{x}/{y}.png', {
+	attribution: "Map style: <a href='https://www.openseamap.org' target='_blank'>OpenSeaMap</a> contributors"
 });
 
 // OpenRailwayMap
