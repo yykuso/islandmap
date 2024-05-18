@@ -429,6 +429,18 @@ L.control.layers(
 ).addTo(map);
 }
 
+// 現在位置表示
+var option = {
+	position: 'topleft',
+	strings: {
+		title: "現在地を表示"
+	},
+	locateOptions: {
+	  maxZoom: 13
+	}
+}
+var lc = L.control.locate(option).addTo(map);
+
 // サイドバー
 var sidebar = L.control.sidebar({
 	autopan: false,
