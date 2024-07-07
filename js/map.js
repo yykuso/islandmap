@@ -319,7 +319,10 @@ var seaRouteMap = L.geoJson(seaRouteData, {
 style: function style(feature) {
 	let colorCode = "#000000"
 
-	if(feature.properties.routeId) {
+	if(feature.properties.color) {
+		colorCode = feature.properties.color;
+
+	} else if(feature.properties.routeId) {
 		let seaRouteId = feature.properties.routeId;
 		let sourceNumber = String(Math.floor(seaRouteId));
 		let i32 = CRC32.str(sourceNumber);
