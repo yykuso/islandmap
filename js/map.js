@@ -317,8 +317,12 @@ onEachFeature: function onEachFeature(feature, layer) {
 var seaRouteMap = L.geoJson(seaRouteData, {
 // ラインの表示スタイル
 style: function style(feature) {
-	let colorCode = "#000000"
+	let colorCode = "#000000";
+	let dashArrayNum = null;
+	let weightNum = 3;
+	let opacityNum = 1.0;
 
+	// 線の色
 	if(feature.properties.color) {
 		colorCode = feature.properties.color;
 
@@ -356,10 +360,23 @@ style: function style(feature) {
 
 	}
 
+	// 破線
+	if(feature.properties.frequency == "suspend") {
+		// 休止中航路
+		dashArrayNum = "5, 5";
+		weightNum = 1.5;
+		opacityNum = 0.5;
+	} else if(feature.properties.frequency == "season") {
+		// 季節運行
+		dashArrayNum = "5, 5";
+		weightNum = 3;
+	}
+
 	return {
 		color: colorCode,
-		weight: 3,
-		opacity: 1.0
+		dashArray: dashArrayNum,
+		weight: weightNum,
+		opacity: opacityNum
 	}
 },
 // ポップアップ
@@ -388,7 +405,8 @@ onEachFeature: function onEachFeature(feature, layer) {
 		// 同じRouteIDの航路を強調表示
 		seaRouteMap.getLayers().forEach( function(item) {
 			if (item.feature.properties.routeId == routeId) {
-				item.setStyle( { weight: 6, opacity: 1.0 } );
+				console.log()
+				item.setStyle( { weight: item.options.weight + 3 } );
 				item.bringToFront();
 			}
 		})
